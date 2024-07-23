@@ -42,7 +42,7 @@ const LandingPage = () => {
             </div>
             <Button className="mt-6" size="lg" asChild>
                 <Link href="/sign-up">
-                    Sign Up Now
+                    Get Kanban for Free
                 </Link>
             </Button>
         </div>
