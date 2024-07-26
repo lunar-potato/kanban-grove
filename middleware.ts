@@ -6,20 +6,26 @@ const isPublicRoute = createRouteMatcher(['/']);
 export default clerkMiddleware((auth, req) => {
   const { userId, orgId } = auth();
 
-  // If user is not authenticated and not on a public route 
-  if (!userId && !isPublicRoute(req)) {
-    return NextResponse.redirect(new URL('/sign-in', req.url));
+  const signInUrl = new URL('/sign-in', req.url);
+  const selectOrgUrl = new URL('/select-org', req.url);
+  const orgUrl = new URL(`/organization/${orgId}`, req.url);
+
+  // If user is not authenticated and not on a public route, redirect to sign in
+  if (!userId && !isPublicRoute(req) && req.url !== signInUrl.href) {
+    return NextResponse.redirect(signInUrl);
   }
 
-  // If user is authenticated but does not have an organization
-  if (userId && !orgId && req.nextUrl.pathname !== "/select-org") {
-    return NextResponse.redirect(new URL("/select-org", req.url));
+  // If user is authenticated but does not have an organization, redirect to select-org
+  if (userId && !orgId && req.nextUrl.pathname !== "/select-org" && req.url !== selectOrgUrl.href) {
+    return NextResponse.redirect(selectOrgUrl);
   }
 
   // If user is authenticated and on a public route
   if (userId && isPublicRoute(req)) {
-    const path = orgId ? `/organization/${orgId}` : "/select-org";
-    return NextResponse.redirect(new URL(path, req.url));
+    const path = orgId ? orgUrl : selectOrgUrl;
+    if (req.url !== path.href) {
+      return NextResponse.redirect(path);
+    }
   }
 
   // Allow access for all other cases
