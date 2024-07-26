@@ -1,41 +1,40 @@
-import { RedirectToSignIn } from "@clerk/nextjs";
 import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 
-const publicRoute = createRouteMatcher([
-  '/'
-]);
+const isPublicRoute = createRouteMatcher(['/']);
 
 export default clerkMiddleware((auth, req) => {
+  const { userId, orgId } = auth();
+
+  const signInUrl = new URL('/sign-in', req.url);
+  const selectOrgUrl = new URL('/select-org', req.url);
+  const orgUrl = new URL(`/organization/${orgId}`, req.url);
+
+  // If user is not authenticated and not on a public route, redirect to sign in
+  if (!userId && !isPublicRoute(req) && req.url !== signInUrl.href) {
+    return NextResponse.redirect(signInUrl);
+  }
+
+  // If user is authenticated but does not have an organization, redirect to select-org
+  if (userId && !orgId && req.nextUrl.pathname !== "/select-org" && req.url !== selectOrgUrl.href) {
+    return NextResponse.redirect(selectOrgUrl);
+  }
+
   // If user is authenticated and on a public route
-  if (auth().userId && publicRoute(req)) {
-    let path = "/select-org";
-
-    if (auth().orgId) {
-      path = `/organization/${auth().orgId}`;
+  if (userId && isPublicRoute(req)) {
+    const path = orgId ? orgUrl : selectOrgUrl;
+    if (req.url !== path.href) {
+      return NextResponse.redirect(path);
     }
-
-    const orgSelection = new URL(path, req.url);
-    return NextResponse.redirect(orgSelection);
   }
 
-  // If user is not authenticated and not on a public route 
-  if (!auth().userId && !publicRoute(req)) {
-    return RedirectToSignIn({ redirectUrl: req.url })
-  }
-
-  // If user is authenticated but does not have an organization and tring to access select-org
-  if (auth().userId && !auth().orgId && req.nextUrl.pathname !== "/select-org") {
-    const orgSelection = new URL("/select-org", req.url);
-    return NextResponse.redirect(orgSelection);
-  }
+  // Allow access for all other cases
+  return NextResponse.next();
 });
 
 export const config = {
   matcher: [
-    // Skip Next.js internals and all static files, unless found in search params
     "/((?!_next|[^?]*\\.(?:html?|css|js(?!on)|jpe?g|webp|png|gif|svg|ttf|woff2?|ico|csv|docx?|xlsx?|zip|webmanifest)).*)",
-    // Always run for API routes
     "/(api|trpc)(.*)",
   ],
 };
