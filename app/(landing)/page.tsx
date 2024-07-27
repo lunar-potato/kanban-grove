@@ -28,7 +28,7 @@ const LandingPage = () => {
                     Kanban Task Management
                 </div>
                 <h1 className="text-3xl md:text-6xl text-center text-neutral-800 mb-6">
-                    Kanban helps organize better
+                    Organize better
                 </h1>
                 <div className="text-3xl md:text-6xl bg-gradient-to-r from-fuchsia-600 to-pink-600 text-white px-4 p-2 rounded-md pd-4 w-fit">
                     task ahead
