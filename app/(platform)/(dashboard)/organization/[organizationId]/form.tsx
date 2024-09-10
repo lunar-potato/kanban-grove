@@ -11,18 +11,18 @@ export const Form = () => {
     return (
         <form action={dispatch}>
             <div className="flex flex-col space-y-2">
-            <input
+                <input
                 id="title"
                 name="title"
                 required
                 placeholder="Enter a board title"
                 className="border-black border p-1"
-            />
-            {state?.errors?.title ? (
+                />
+                {state?.errors?.title ? (
                 <div>
                     {state.errors.title.map((error: string) => (
                         <p key={error} className="text-rose-500">
-
+                            {error}
                         </p>
                     ))}
                 </div>

@@ -3,7 +3,7 @@
 import { z } from "zod";
 import { db } from "@/lib/db";
 import { revalidatePath } from "next/cache";
-import { permanentRedirect } from "next/navigation";
+import { redirect } from "next/navigation";
 
 export type State = {
   errors?: {
@@ -38,12 +38,12 @@ export async function create(prevState: State, formData: FormData) {
         title,
       },
     });
-  } catch (error) {
+  } catch(error) {
     return {
       message: "Database Error",
     };
   }
 
   revalidatePath("/organization/org_2kFr6zKrZzEXec1B3ljCn6iIpOf");
-  permanentRedirect("/organization/org_2kFr6zKrZzEXec1B3ljCn6iIpOf");
+  redirect("/organization/org_2kFr6zKrZzEXec1B3ljCn6iIpOf");
 }
