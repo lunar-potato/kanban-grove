@@ -18,7 +18,7 @@ const createBoard = z.object({
   }),
 });
 
-export async function create(prevState: State, formData: FormData) {
+export async function create(prevState: State, formData: FormData): Promise<State> {
   const validatedFields = createBoard.safeParse({
     title: formData.get("title"),
   });
@@ -26,7 +26,7 @@ export async function create(prevState: State, formData: FormData) {
   if (!validatedFields.success) {
     return {
       errors: validatedFields.error.flatten().fieldErrors,
-      message: "Missing Fields.",
+      message: "Valiation Error: Missing or incorrect fields.",
     };
   }
 
