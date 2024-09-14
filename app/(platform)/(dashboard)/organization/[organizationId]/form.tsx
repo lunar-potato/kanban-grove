@@ -1,4 +1,4 @@
-"use client";
+"use client"; // Running on client side
 
 import { createBoard } from "@/actions/create-board";
 import { FormInput } from "./form-input";
@@ -6,12 +6,15 @@ import { FormButton } from "./form-button";
 import { useAction } from "@/hooks/use-action";
 
 export const Form = () => {
+  // destructured execute function and filed errors from hook
+  // createBoard passed as an action to be executed
+  // onSuccess and onError handleres are defined to deal with the result of the action
   const { execute, fieldErrors } = useAction(createBoard, {
     onSuccess: (data) => {
-        console.log(data, "Success!")
+        console.log(data, "Success!") // logging data if successful board creation
     },
     onError: (error) => {
-      console.error(error);
+      console.error(error); // Logging error if it fails
     }
   });
 
