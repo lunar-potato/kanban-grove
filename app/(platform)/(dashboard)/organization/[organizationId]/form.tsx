@@ -1,9 +1,9 @@
 "use client"; // Running on client side
 
 import { createBoard } from "@/actions/create-board";
-import { FormButton } from "./form-button";
 import { useAction } from "@/hooks/use-action";
 import { FormInput } from "@/components/form/form-input";
+import { FormSubmit } from "@/components/form/form-submit";
 
 export const Form = () => {
   // destructured execute function and filed errors from hook
@@ -31,7 +31,7 @@ export const Form = () => {
       <div className="flex flex-col space-y-2">
         <FormInput label="Board Title" id="title" errors={fieldErrors} />
       </div>
-      <FormButton />
+      <FormSubmit>Save</FormSubmit>
     </form>
   );
 };
